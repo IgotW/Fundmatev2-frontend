@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  /* FundMate colors */
+
+  --color-ink: #16231f;
+  --color-paper: #f3f5f1;
+
+  --color-primary: #1f4b3f;
+  --color-primary-light: #2f6350;
+
+  --color-gold: #c9a227;
+  --color-gold-soft: #e4c766;
+
+  --color-muted: #6b776e;
+  --color-muted-light: #8c9088;
+
+  --color-line: #dad9ce;
+  --color-divider: #e7e6dc;
+
+  --color-sidebar-bg: #f8f8f4;
+  --color-placeholder: #a9aa9f;
+  --color-icon-muted: #c7c8bd;
+
+  /* Status colors */
+
+  --color-success-bg: #e7f0ea;
+  --color-success-text: #2f6350;
+
+  --color-warning-bg: #f5edd9;
+  --color-warning-text: #8c6d1f;
+
+  --color-danger-bg: #fbeae8;
+  --color-danger-text: #b3463b;
+
+  /* Fonts */
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #f3f5f1;
+  color: #16231f;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
