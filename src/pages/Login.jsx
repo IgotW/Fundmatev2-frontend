@@ -1,6 +1,17 @@
+import { useState } from "react";
+import { Check, X } from "lucide-react";
 import LoginForm from "../components/auth/LoginForm";
 
 const Login = () => {
+  const [successMessage, setSuccessMessage] = useState(
+    () => sessionStorage.getItem("verificationSuccessMessage") || ""
+  );
+
+  const dismissSuccessMessage = () => {
+    setSuccessMessage("");
+    sessionStorage.removeItem("verificationSuccessMessage");
+  };
+
   return (
     <main className="min-h-screen bg-paper">
       <div className="grid min-h-screen lg:grid-cols-2">
@@ -42,6 +53,27 @@ const Login = () => {
             <p className="mt-3 text-sm leading-6 text-muted">
               Enter your credentials to access your account.
             </p>
+
+            {successMessage && (
+              <div
+                className="mt-6 flex items-start gap-3 rounded-2xl border border-[#2F6350]/20 bg-[#E7F0EA] px-4 py-3 text-sm text-[#2F6350]"
+                role="status"
+              >
+                <Check size={18} strokeWidth={2} className="mt-0.5 shrink-0" />
+
+                <p className="flex-1 font-medium">{successMessage}</p>
+
+                <button
+                  type="button"
+                  onClick={dismissSuccessMessage}
+                  className="rounded p-0.5 transition hover:bg-[#2F6350]/10"
+                  aria-label="Dismiss verification success message"
+                >
+                  <X size={16} strokeWidth={2} />
+                </button>
+              </div>
+            )}
+
             <LoginForm />
           </div>
         </section>

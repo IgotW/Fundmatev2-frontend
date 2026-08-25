@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { verifyOtp } from "../api/auth.api.js";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
+  const email = new URLSearchParams(window.location.search).get("email");
 
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) {
@@ -39,13 +43,31 @@ const VerifyOtp = () => {
     }
 
     setIsLoading(true);
+    setError("");
 
-    // Backend verification will be added later.
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await verifyOtp(email, code);
 
-    console.log("OTP:", code);
+      console.log("OTP verification successful:", response);
 
-    setIsLoading(false);
+      setIsVerified(true);
+
+      // Keep the confirmation available after this page is replaced by login.
+      sessionStorage.setItem(
+        "verificationSuccessMessage",
+        "Your account has been verified. You can now log in.",
+      );
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -64,6 +86,23 @@ const VerifyOtp = () => {
               </span>
             </div>
           </div>
+
+          {/* Content */}
+          {isVerified && (
+            <div className="mt-4 rounded-2xl border border-[#2F6350]/20 bg-[#E7F0EA] px-4 py-3 text-center">
+              <div className="flex items-center justify-center gap-2">
+                <Check size={18} strokeWidth={1.8} className="text-[#2F6350]" />
+
+                <p className="text-sm font-medium text-[#2F6350]">
+                  Email verified successfully!
+                </p>
+              </div>
+
+              <p className="mt-1 text-xs text-[#2F6350]/80">
+                Redirecting you to login...
+              </p>
+            </div>
+          )}
 
           {/* Heading */}
           <div className="mt-12 text-center">
@@ -100,12 +139,14 @@ const VerifyOtp = () => {
               ))}
             </div>
 
+            {/* Error */}
             {error && (
               <p className="mt-4 text-center text-sm text-danger-text">
                 {error}
               </p>
             )}
 
+            {/* Verify button */}
             <button
               type="submit"
               disabled={isLoading}

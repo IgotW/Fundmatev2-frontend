@@ -79,7 +79,7 @@ const RegisterForm = () => {
 
       console.log("Registration successful:", response);
 
-      window.location.href = "/verify-otp";
+      window.location.href = `/verify-otp?email=${encodeURIComponent(formData.email)}`;
     } catch (error) {
       console.error("Registration failed:", error);
 
