@@ -44,7 +44,6 @@ const Login = () => {
             </p>
             <LoginForm />
           </div>
-          s
         </section>
       </div>
     </main>
