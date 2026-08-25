@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { registerUser } from "../../api/auth.api.js";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -69,12 +70,25 @@ const RegisterForm = () => {
 
     setIsLoading(true);
 
-    // Backend connection will be added later.
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
 
-    console.log("Registration data:", formData);
+      console.log("Registration successful:", response);
 
-    setIsLoading(false);
+      window.location.href = "/verify-otp";
+    } catch (error) {
+      console.error("Registration failed:", error);
+
+      setErrors({
+        form: error.message || "Registration failed. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -87,6 +101,12 @@ const RegisterForm = () => {
         >
           Full name
         </label>
+
+        {errors.form && (
+          <div className="rounded-2xl border border-danger-text/20 bg-danger-bg px-4 py-3">
+            <p className="text-sm text-danger-text">{errors.form}</p>
+          </div>
+        )}
 
         <input
           id="name"
