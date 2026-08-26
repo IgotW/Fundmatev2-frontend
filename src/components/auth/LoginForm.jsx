@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
+import { loginUser } from "../../api/auth.api.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -53,18 +56,35 @@ const LoginForm = () => {
 
     setIsLoading(true);
 
-    // Backend connection will be added later.
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await loginUser({
+        identifier: formData.email,
+        password: formData.password,
+      });
 
-    console.log("Login data:", formData);
+      console.log("Login successful:", response);
 
-    setIsLoading(false);
+      login(response.data.user, response.data.accessToken);
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      setErrors({
+        form: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
       {/* Email */}
       <div>
+        {errors.form && (
+          <div className="rounded-2xl border border-[#B3463B]/20 bg-[#FBEAE8] px-4 py-3">
+            <p className="text-sm text-[#B3463B]">{errors.form}</p>
+          </div>
+        )}
         <label
           htmlFor="email"
           className="mb-2 block text-sm font-medium text-ink"
