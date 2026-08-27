@@ -56,3 +56,20 @@ export const loginUser = async (credentials) => {
 
   return data;
 };
+
+export const getProfile = async (token) => {
+  const response = await fetch(`${API_URL}/users/profile`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to retrieve profile.");
+  }
+
+  return data;
+};

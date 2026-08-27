@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { loginUser } from "../../api/auth.api.js";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -65,6 +68,7 @@ const LoginForm = () => {
       console.log("Login successful:", response);
 
       login(response.data.user, response.data.accessToken);
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
 
