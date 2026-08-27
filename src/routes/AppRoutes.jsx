@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import VerifyOtp from "../pages/VerifyOTP";
+import VerifyOtp from "../pages/VerifyOtp";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import Dashboard from "../pages/Dashboard";
 
