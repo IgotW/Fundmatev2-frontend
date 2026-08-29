@@ -1,22 +1,34 @@
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 
-const Header = () => {
+const Header = ({ setIsSidebarOpen }) => {
   const { user } = useAuth();
 
   return (
-    <header className="flex items-center justify-between border-b border-line bg-paper px-8 py-5">
-      {/* Page information */}
-      <div>
-        <p className="text-sm text-muted">Welcome back</p>
+    <header className="flex items-center justify-between border-b border-line bg-paper px-5 py-4 sm:px-6 lg:px-8 lg:py-5">
+      {/* Left Side */}
+      <div className="flex items-center gap-4">
+        {/* Mobile Menu */}
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/60 text-muted transition hover:text-primary lg:hidden"
+          aria-label="Open menu"
+        >
+          <Menu size={20} strokeWidth={1.8} />
+        </button>
 
-        <h1 className="mt-1 font-display text-2xl text-ink">
-          {user?.name || "FundMate User"}
-        </h1>
+        {/* Page information */}
+        <div>
+          <p className="text-sm text-muted">Welcome back</p>
+
+          <h1 className="mt-1 font-display text-xl text-ink sm:text-2xl">
+            {user?.name || "FundMate User"}
+          </h1>
+        </div>
       </div>
 
       {/* Right side */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 sm:gap-5">
         {/* Notifications */}
         <button className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/60 text-muted transition hover:text-primary">
           <Bell size={19} strokeWidth={1.8} />
