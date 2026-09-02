@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import StatCard from "../components/dashboard/StatCard.jsx";
 import { Wallet, Users, CalendarClock } from "lucide-react";
 import ContributionProgress from "../components/dashboard/ContributionProgress.jsx";
+import RecentActivity from "../components/dashboard/RecentActivity.jsx";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -61,17 +62,7 @@ const Dashboard = () => {
           <ContributionProgress />
 
           {/* Recent Activity will go here */}
-          <div className="rounded-2xl border border-line bg-white/60 p-5 sm:p-6">
-            <p className="text-sm font-medium text-muted">Recent activity</p>
-
-            <h2 className="mt-1 font-display text-2xl text-ink">
-              Your latest activity
-            </h2>
-
-            <p className="mt-4 text-sm text-muted">
-              Recent contribution activity will appear here.
-            </p>
-          </div>
+          <RecentActivity />
         </div>
       </section>
     </main>
