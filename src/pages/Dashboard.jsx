@@ -4,6 +4,7 @@ import { Wallet, Users, CalendarClock } from "lucide-react";
 import ContributionProgress from "../components/dashboard/ContributionProgress.jsx";
 import RecentActivity from "../components/dashboard/RecentActivity.jsx";
 import UpcomingContributions from "../components/dashboard/UpcomingContributions.jsx";
+import GroupsQuickAccess from "../components/dashboard/GroupsQuickAccess.jsx";
 
 const Dashboard = () => {
   return (
@@ -46,6 +47,11 @@ const Dashboard = () => {
             icon={CalendarClock}
           />
         </div>
+      </section>
+
+      {/* Quick Access to Groups */}
+      <section className="mt-10">
+        <GroupsQuickAccess />
       </section>
 
       {/* Main Dashboard Content */}
