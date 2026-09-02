@@ -1,35 +1,26 @@
-import { useAuth } from "../context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
-
 import StatCard from "../components/dashboard/StatCard.jsx";
 import { Wallet, Users, CalendarClock } from "lucide-react";
+
 import ContributionProgress from "../components/dashboard/ContributionProgress.jsx";
 import RecentActivity from "../components/dashboard/RecentActivity.jsx";
+import UpcomingContributions from "../components/dashboard/UpcomingContributions.jsx";
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   return (
-    <main className="min-h-screen bg-paper p-10">
-      <h1 className="font-display text-4xl text-ink">
-        Welcome to FundMate Dashboard
-      </h1>
+    <div>
+      {/* Dashboard Introduction */}
+      <section>
+        <p className="text-sm font-medium text-muted">Overview</p>
 
-      <p className="mt-4 text-muted">You are successfully logged in.</p>
+        <h1 className="mt-2 font-display text-3xl text-ink sm:text-4xl">
+          Your financial workspace
+        </h1>
 
-      {user && (
-        <div className="mt-6">
-          <p className="text-ink">Welcome, {user.name}</p>
-
-          <p className="text-muted">{user.email}</p>
-        </div>
-      )}
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+          Keep track of your groups, contributions, and upcoming payments in one
+          place.
+        </p>
+      </section>
 
       {/* Financial Summary */}
       <section className="mt-10">
@@ -56,16 +47,21 @@ const Dashboard = () => {
           />
         </div>
       </section>
-      {/* Dashboard Content */}
+
+      {/* Main Dashboard Content */}
       <section className="mt-6">
         <div className="grid gap-6 lg:grid-cols-2">
           <ContributionProgress />
 
-          {/* Recent Activity will go here */}
           <RecentActivity />
         </div>
       </section>
-    </main>
+
+      {/* Upcoming Contributions */}
+      <section className="mt-6">
+        <UpcomingContributions />
+      </section>
+    </div>
   );
 };
 
