@@ -13,6 +13,7 @@ import Groups from "../pages/Groups";
 import Contributions from "../pages/Contributions";
 import Transactions from "../pages/Transactions";
 import Profile from "../pages/Profile";
+import CreateGroup from "../pages/CreateGroup";
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,8 @@ const AppRoutes = () => {
         <Route path="/contributions" element={<Contributions />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/profile" element={<Profile />} />
+
+        <Route path="/groups/create" element={<CreateGroup />} />
       </Route>
     </Routes>
   );
