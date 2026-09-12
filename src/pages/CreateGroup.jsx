@@ -1,8 +1,15 @@
 import { ArrowLeft, CalendarDays, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth.jsx";
+import { createGroup } from "../api/auth.api.js";
 
 const CreateGroup = () => {
+  const navigate = useNavigate();
+  const { token } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -16,6 +23,8 @@ const CreateGroup = () => {
     distributionDate: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -25,8 +34,68 @@ const CreateGroup = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Group name is required.";
+    }
+
+    if (
+      !formData.contributionAmount ||
+      Number(formData.contributionAmount) < 1
+    ) {
+      newErrors.contributionAmount = "Contribution amount must be at least ₱1.";
+    }
+
+    if (formData.contributionFrequency === "custom") {
+      if (!formData.paymentDays.trim()) {
+        newErrors.paymentDays = "Enter at least one payment day.";
+      } else {
+        const days = formData.paymentDays
+          .split(",")
+          .map((day) => Number(day.trim()));
+
+        if (
+          days.length === 0 ||
+          days.some((day) => !Number.isInteger(day) || day < 1 || day > 31)
+        ) {
+          newErrors.paymentDays =
+            "Payment days must be whole numbers from 1 to 31.";
+        }
+      }
+    }
+
+    if (Number(formData.gracePeriod) < 0) {
+      newErrors.gracePeriod = "Grace period cannot be negative.";
+    }
+
+    if (Number(formData.penaltyAmount) < 0) {
+      newErrors.penaltyAmount = "Penalty amount cannot be negative.";
+    }
+
+    if (!formData.distributionDate) {
+      newErrors.distributionDate = "Distribution date is required.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setSubmitError("");
+
+    if (!validateForm()) {
+      return;
+    }
+
+    if (!token) {
+      setSubmitError("Your session has expired. Please log in again.");
+      return;
+    }
 
     const paymentDays =
       formData.contributionFrequency === "custom"
@@ -49,7 +118,17 @@ const CreateGroup = () => {
       distributionDate: formData.distributionDate,
     };
 
-    console.log("Create Group Payload:", payload);
+    try {
+      setIsSubmitting(true);
+
+      await createGroup(payload, token);
+
+      navigate("/groups");
+    } catch (error) {
+      setSubmitError(error.message || "Failed to create group.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,6 +175,12 @@ const CreateGroup = () => {
           </div>
 
           <form className="mt-8" onSubmit={handleSubmit}>
+            {submitError && (
+              <div className="mb-6 rounded-xl border border-[#E7C7C3] bg-[#FBECEC] px-4 py-3 text-sm text-[#9A3B32]">
+                {submitError}
+              </div>
+            )}
+
             <div className="grid gap-8 lg:grid-cols-2">
               {/* LEFT COLUMN */}
               <div className="space-y-8">
@@ -124,6 +209,11 @@ const CreateGroup = () => {
                         placeholder="e.g. Sample Savings"
                         className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-primary focus:ring-2 focus:ring-primary/10"
                       />
+                      {errors.name && (
+                        <p className="mt-2 text-xs text-[#9A3B32]">
+                          {errors.name}
+                        </p>
+                      )}
                     </div>
 
                     {/* Description */}
@@ -178,6 +268,11 @@ const CreateGroup = () => {
                         placeholder="e.g. 500"
                         className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-primary focus:ring-2 focus:ring-primary/10"
                       />
+                      {errors.contributionAmount && (
+                        <p className="mt-2 text-xs text-[#9A3B32]">
+                          {errors.contributionAmount}
+                        </p>
+                      )}
 
                       <p className="mt-2 text-xs text-muted">
                         The amount each member contributes per payment cycle.
@@ -245,6 +340,11 @@ const CreateGroup = () => {
                             placeholder="e.g. 15, 30"
                             className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-primary focus:ring-2 focus:ring-primary/10"
                           />
+                          {errors.paymentDays && (
+                            <p className="mt-2 text-xs text-[#9A3B32]">
+                              {errors.paymentDays}
+                            </p>
+                          )}
 
                           <p className="mt-2 text-xs leading-5 text-muted">
                             Enter the days of the month when members should
@@ -285,6 +385,11 @@ const CreateGroup = () => {
                         onChange={handleChange}
                         className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-primary focus:ring-2 focus:ring-primary/10"
                       />
+                      {errors.gracePeriod && (
+                        <p className="mt-2 text-xs text-[#9A3B32]">
+                          {errors.gracePeriod}
+                        </p>
+                      )}
 
                       <p className="mt-2 text-xs text-muted">
                         Number of days allowed after the due date before a
@@ -312,6 +417,11 @@ const CreateGroup = () => {
                         placeholder="e.g. 50"
                         className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-primary focus:ring-2 focus:ring-primary/10"
                       />
+                      {errors.penaltyAmount && (
+                        <p className="mt-2 text-xs text-[#9A3B32]">
+                          {errors.penaltyAmount}
+                        </p>
+                      )}
 
                       <p className="mt-2 text-xs text-muted">
                         Amount charged when a contribution becomes late.
@@ -330,7 +440,6 @@ const CreateGroup = () => {
                       <select
                         id="penaltyApplication"
                         name="penaltyApplication"
-                        defaultValue="once"
                         value={formData.penaltyApplication}
                         onChange={handleChange}
                         className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
@@ -409,6 +518,11 @@ const CreateGroup = () => {
                       onChange={handleChange}
                       className="mt-2 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                     />
+                    {errors.distributionDate && (
+                      <p className="mt-2 text-xs text-[#9A3B32]">
+                        {errors.distributionDate}
+                      </p>
+                    )}
 
                     <p className="mt-2 text-xs leading-5 text-muted">
                       The date when the group fund is scheduled for
@@ -430,9 +544,10 @@ const CreateGroup = () => {
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary-light"
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary-light disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Create Group
+                {isSubmitting ? "Creating Group..." : "Create Group"}
               </button>
             </div>
           </form>

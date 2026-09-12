@@ -1,5 +1,5 @@
 import { Bell, Menu } from "lucide-react";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
 
 const Header = ({ setIsSidebarOpen }) => {
   const { user } = useAuth();

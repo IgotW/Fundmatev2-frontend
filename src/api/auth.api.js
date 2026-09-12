@@ -73,3 +73,39 @@ export const getProfile = async (token) => {
 
   return data;
 };
+
+export const createGroup = async (groupData, token) => {
+  const response = await fetch(`${API_URL}/groups`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(groupData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create group.");
+  }
+
+  return data;
+};
+
+export const getMyGroups = async (token) => {
+  const response = await fetch(`${API_URL}/groups/my-groups`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch groups.");
+  }
+
+  return data;
+};
