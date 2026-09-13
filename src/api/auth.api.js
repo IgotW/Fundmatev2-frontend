@@ -109,3 +109,20 @@ export const getMyGroups = async (token) => {
 
   return data;
 };
+
+export const getGroupById = async (groupId, token) => {
+  const response = await fetch(`${API_URL}/groups/${groupId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to retrieve group.");
+  }
+
+  return data;
+};

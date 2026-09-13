@@ -1,40 +1,56 @@
-import { Plus, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import GroupCard from "../components/groups/GroupCard.jsx";
+import { Plus, Users } from "lucide-react";
 
-const groups = [
-  {
-    id: "1",
-    name: "Monthly Savings Group",
-    role: "admin",
-    members: 8,
-    contribution: "₱500.00",
-    nextDueDate: "Sep 10",
-    progress: 75,
-  },
-  {
-    id: "2",
-    name: "Emergency Fund Circle",
-    role: "member",
-    members: 12,
-    contribution: "₱1,000.00",
-    nextDueDate: "Sep 15",
-    progress: 50,
-  },
-  {
-    id: "3",
-    name: "Weekend Savings Circle",
-    role: "member",
-    members: 6,
-    contribution: "₱300.00",
-    nextDueDate: "Sep 20",
-    progress: 90,
-  },
-];
+import GroupCard from "../components/groups/GroupCard.jsx";
+import { getMyGroups } from "../api/auth.api.js";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 const Groups = () => {
+  const { token } = useAuth();
+
+  const [groups, setGroups] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setError("");
+
+        const response = await getMyGroups(token);
+
+        console.log("My groups:", response);
+
+        console.log("Groups API response:", response);
+
+        const mappedGroups = (response.data || []).map((membership) => ({
+          id: membership.group._id,
+          name: membership.group.name,
+          role: membership.role,
+          members: membership.group.membersCount ?? 0,
+          contribution: membership.group.contributionAmount,
+          nextDueDate: membership.group.nextDueDate ?? null,
+          progress: membership.group.progress ?? 0,
+        }));
+
+        setGroups(mappedGroups);
+      } catch (error) {
+        console.error("Failed to fetch groups:", error);
+        setError(error.message || "Failed to load your groups.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGroups();
+  }, [token]);
 
   const filteredGroups =
     filter === "all" ? groups : groups.filter((group) => group.role === filter);
@@ -71,7 +87,7 @@ const Groups = () => {
         <div className="flex flex-wrap gap-2">
           {[
             { value: "all", label: "All Groups" },
-            { value: "admin", label: "Admin" },
+            { value: "leader", label: "Leader" },
             { value: "member", label: "Member" },
           ].map((option) => (
             <button
@@ -91,7 +107,15 @@ const Groups = () => {
 
       {/* Groups */}
       <section className="mt-10">
-        {groups.length === 0 ? (
+        {isLoading ? (
+          <div className="rounded-2xl border border-line bg-white/60 px-6 py-12 text-center">
+            <p className="text-sm text-muted">Loading your groups...</p>
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl border border-[#FBEAE8] bg-[#FBEAE8] px-6 py-8 text-center">
+            <p className="text-sm text-[#9A3B32]">{error}</p>
+          </div>
+        ) : groups.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-line bg-white/40 px-6 py-12 text-center">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Users size={24} strokeWidth={1.8} />
@@ -126,7 +150,7 @@ const Groups = () => {
         ) : filteredGroups.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-line bg-white/40 px-6 py-10 text-center">
             <h2 className="font-display text-xl text-ink">
-              No {filter === "admin" ? "admin" : "member"} groups found
+              No {filter === "leader" ? "leader" : "member"} groups found
             </h2>
 
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted">

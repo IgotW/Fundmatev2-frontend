@@ -10,7 +10,7 @@ const GroupCard = ({
   nextDueDate,
   progress,
 }) => {
-  const isAdmin = role === "admin";
+  const isLeader = role === "leader";
 
   return (
     <div className="rounded-2xl border border-line bg-white/60 p-5 transition hover:border-primary/30 hover:bg-white sm:p-6">
@@ -21,12 +21,12 @@ const GroupCard = ({
 
           <span
             className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-              isAdmin
+              isLeader
                 ? "bg-[#E7F0EA] text-[#2F6350]"
                 : "bg-primary/10 text-primary"
             }`}
           >
-            {isAdmin ? "Admin" : "Member"}
+            {isLeader ? "Leader" : "Member"}
           </span>
         </div>
 
@@ -35,25 +35,37 @@ const GroupCard = ({
         </div>
       </div>
 
-      {/* Group details */}
+      {/* Group Details */}
       <div className="mt-6 space-y-3">
+        {/* Members */}
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted">Members</span>
+
           <span className="font-mono text-ink">{members}</span>
         </div>
 
+        {/* Contribution */}
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted">Contribution</span>
-          <span className="font-mono text-ink">{contribution}</span>
+
+          <span className="font-mono text-ink">
+            ₱
+            {Number(contribution).toLocaleString("en-PH", {
+              minimumFractionDigits: 2,
+            })}
+          </span>
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        {/* Next Due Date */}
+        <div className="flex items-center justify-between gap-4 text-sm">
           <span className="flex items-center gap-2 text-muted">
             <CalendarDays size={16} strokeWidth={1.8} />
             Next due date
           </span>
 
-          <span className="text-ink">{nextDueDate}</span>
+          <span className="text-right text-ink">
+            {nextDueDate || "No upcoming cycle"}
+          </span>
         </div>
       </div>
 
@@ -61,6 +73,7 @@ const GroupCard = ({
       <div className="mt-6">
         <div className="flex items-center justify-between text-xs text-muted">
           <span>Contribution progress</span>
+
           <span className="font-mono text-ink">{progress}%</span>
         </div>
 
@@ -72,10 +85,10 @@ const GroupCard = ({
         </div>
       </div>
 
-      {/* View group */}
+      {/* View Group */}
       <Link
         to={`/groups/${id}`}
-        className="mt-6 flex items-center justify-between border-t border-divider pt-4 text-sm font-medium text-primary transition hover:text-primary-light"
+        className="group mt-6 flex items-center justify-between border-t border-divider pt-4 text-sm font-medium text-primary transition hover:text-primary-light"
       >
         <span>View group</span>
 

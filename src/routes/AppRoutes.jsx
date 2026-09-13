@@ -14,6 +14,8 @@ import Contributions from "../pages/Contributions";
 import Transactions from "../pages/Transactions";
 import Profile from "../pages/Profile";
 import CreateGroup from "../pages/CreateGroup";
+import GroupDetails from "../pages/GroupDetails";
+import ContributionCycleDetails from "../pages/ContributionCycleDetails";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +38,11 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
 
         <Route path="/groups/create" element={<CreateGroup />} />
+        <Route path="/groups/:groupId" element={<GroupDetails />} />
+        <Route
+          path="/groups/:groupId/cycles/:cycleId"
+          element={<ContributionCycleDetails />}
+        />
       </Route>
     </Routes>
   );
