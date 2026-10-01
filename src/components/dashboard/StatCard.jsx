@@ -1,6 +1,6 @@
 const StatCard = ({ label, value, description, icon: Icon }) => {
   return (
-    <div className="rounded-2xl border border-line bg-white/60 p-5 sm:p-6">
+    <div className="fm-rise rounded-2xl border border-line bg-white/60 p-5 shadow-[0_10px_30px_-24px_rgba(22,35,31,0.55)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-white sm:p-6">
       {/* Top section */}
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted">{label}</p>

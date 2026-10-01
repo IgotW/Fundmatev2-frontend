@@ -2,7 +2,7 @@ import { ArrowRight, Users, Plus, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import GroupQuickAccessCard from "./GroupQuickAccessCard.jsx";
 
-const groups = [
+const defaultGroups = [
   {
     id: "1",
     name: "Monthly Savings Group",
@@ -26,7 +26,7 @@ const groups = [
   },
 ];
 
-const GroupsQuickAccess = () => {
+const GroupsQuickAccess = ({ groups = defaultGroups, isLoading = false }) => {
   return (
     <section>
       {/* Section Header */}
@@ -53,7 +53,13 @@ const GroupsQuickAccess = () => {
       </div>
 
       {/* Groups or Empty State */}
-      {groups.length === 0 ? (
+      {isLoading ? (
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="h-44 animate-pulse rounded-2xl bg-white/60" />
+          ))}
+        </div>
+      ) : groups.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-line bg-white/40 px-6 py-10 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Users size={22} strokeWidth={1.8} />
