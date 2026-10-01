@@ -1,7 +1,7 @@
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const contributions = [
+const defaultContributions = [
   {
     id: 1,
     groupName: "Monthly Savings Group",
@@ -25,7 +25,7 @@ const contributions = [
   },
 ];
 
-const UpcomingContributions = () => {
+const UpcomingContributions = ({ contributions = defaultContributions }) => {
   return (
     <section className="rounded-2xl border border-line bg-white/60 p-5 sm:p-6">
       {/* Header */}
@@ -53,7 +53,9 @@ const UpcomingContributions = () => {
 
       {/* Contribution List */}
       <div className="mt-6">
-        {contributions.map((contribution, index) => (
+        {contributions.length === 0 ? (
+          <p className="py-5 text-sm text-muted">No upcoming contribution cycles yet.</p>
+        ) : contributions.map((contribution, index) => (
           <div
             key={contribution.id}
             className={`py-5 ${

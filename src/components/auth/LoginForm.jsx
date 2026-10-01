@@ -9,7 +9,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: "",
+    identifier: "",
     password: "",
   });
 
@@ -34,10 +34,8 @@ const LoginForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email.";
+    if (!formData.identifier.trim()) {
+      newErrors.identifier = "Email address or phone number is required.";
     }
 
     if (!formData.password) {
@@ -61,7 +59,7 @@ const LoginForm = () => {
 
     try {
       const response = await loginUser({
-        identifier: formData.email,
+        identifier: formData.identifier,
         password: formData.password,
       });
 
@@ -90,26 +88,27 @@ const LoginForm = () => {
           </div>
         )}
         <label
-          htmlFor="email"
+          htmlFor="identifier"
           className="mb-2 block text-sm font-medium text-ink"
         >
-          Email address
+          Email address or phone number
         </label>
 
         <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
+          id="identifier"
+          name="identifier"
+          type="text"
+          autoComplete="username"
+          value={formData.identifier}
           onChange={handleChange}
-          placeholder="you@example.com"
+          placeholder="you@example.com or 09XXXXXXXXX"
           className={`w-full rounded-2xl border bg-white/60 px-4 py-3.5 text-sm text-ink outline-none transition placeholder:text-placeholder focus:border-gold focus:ring-2 focus:ring-gold/20 ${
-            errors.email ? "border-danger-text" : "border-line"
+            errors.identifier ? "border-danger-text" : "border-line"
           }`}
         />
 
-        {errors.email && (
-          <p className="mt-2 text-sm text-danger-text">{errors.email}</p>
+        {errors.identifier && (
+          <p className="mt-2 text-sm text-danger-text">{errors.identifier}</p>
         )}
       </div>
 
@@ -133,6 +132,7 @@ const LoginForm = () => {
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
             value={formData.password}
             onChange={handleChange}
             placeholder="Enter your password"
